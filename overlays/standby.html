@@ -17,9 +17,9 @@
 -->
 <script>
 /*
- * Idle screensaver shell, shared by the two Klingon packs. tools/build.py
- * fills in the pack's scene (tools/standby/<pack>.js), its colours, glyph
- * shapes and text (C) and a glyph atlas of the pack's font (ATLAS).
+ * Idle screensaver shell, shared by the two Klingon packs. The source repo's
+ * build fills in the pack's scene, its colours, glyph shapes and text (C)
+ * and a glyph atlas of the pack's font (ATLAS).
  *
  * Runs inside the dashboard's sandboxed overlay iframe (no network, no storage).
  * The dashboard mounts it after 15 idle minutes and removes it on a key press
@@ -117,13 +117,13 @@
   // ── scene ──
   /*
    * The Motion Picture: the K't'inga's tactical display (frames 50, 58, 92,
-   * 94), in the colours measured on the film (tools/film-evidence.md).
+   * 94), in the colours measured on the film (see the README's film evidence).
    *
    * One screen in its bevelled amber-brown housing. Inside: the red triangle
    * lattice in an elongated hexagon, cells flickering; the orange ship symbol
    * (traced from frame 92) in its blinking target box; a cyan-white contact
    * that closes in and resets; three torpedoes that light in turn on the line
-   * to it; rows of Klingon-style glyphs (original, tools/glyphs.py) that
+   * to it; rows of Klingon-style glyphs (original, made in code) that
    * change; the orange triangle marker. The app's name sits under the grid.
    */
   const SEED = 1979
