@@ -12,7 +12,7 @@ An unofficial Kiro Crew theme modeled on the bridge of the Klingon K't'inga-clas
 - **Type:** Chakra Petch, a free sans whose letters have cut corners, like the screen housings. The Klingon screens carry no Latin type, only Klingon glyphs, so there is no film face to match.
 - **Shapes:** cut (bevelled) corners use CSS `corner-shape: bevel`, which Chrome, Edge and the desktop app draw. A browser without it shows rounded corners instead.
 - **Glyphs:** the Klingon-style glyphs on the splash and the screensaver are original, made in code. They are decoration: they spell nothing, as the film graphics did not.
-- **Sounds:** short, low console tones when the theme turns on or off, when a reply arrives, on notifications, and when an approval waits. Original sounds made in code (`tools/sounds.py`), shaped after the 1979 film's electronic effects: warbling square-wave tones and falling two-note calls. None is taken from the film. They stay silent under reduced motion and while sounds are muted.
+- **Sounds:** short, low console tones when the theme turns on or off, when a reply arrives, on notifications, and when an approval waits. Original sounds made in code, shaped after the 1979 film's electronic effects: warbling square-wave tones and falling two-note calls. None is taken from the film. They stay silent under reduced motion and while sounds are muted.
 
 Choosing this theme turns the screensaver on. The first time you pick it, Kiro Crew asks whether to play its sounds. Turn either off later under Settings → Display → Theme → Experience (Overlays for the screensaver, Sounds for the sounds).
 
@@ -49,7 +49,7 @@ The sounds are WAV files in `audio/`, named in `audio/manifest.json`: `activate`
 
 Colours were measured on [TrekCore](https://movies.trekcore.com/gallery/) Blu-ray screencaps: the film's hue and saturation, with brightness set for contrast (body text at least 7:1, secondary text and status colours at least 4.5:1). The frames are not in this repo.
 
-Source: theatrical 4K remaster Blu-ray (2021). Set: Harold Michelson; graphics: Lee Cole, who introduced the edge-lit plastic displays ([Memory Alpha, K't'inga class](https://memory-alpha.fandom.com/wiki/K%27t%27inga_class)).
+Source: theatrical 4K remaster Blu-ray (2021). Set: redesigned by Douglas Trumbull and Andrew Probert, built under art director John Vallone; graphics: Lee Cole, who credited Vallone with the edge-lit plastic displays ([Memory Alpha, K't'inga class](https://memory-alpha.fandom.com/wiki/K%27t%27inga_class)).
 
 | Colour | Frame | What it is | Film hue, sat |
 |---|---|---|---|
@@ -64,11 +64,11 @@ Source: theatrical 4K remaster Blu-ray (2021). Set: Harold Michelson; graphics: 
 
 Shapes: the viewscreen housing is a wide rectangle with cut corners (50, 94). The grid is an elongated hexagon, pointed left and right (92, 94), made of equilateral triangles. The target box round the ship symbol is a smaller hexagon of the same shape (94). The contact is a hexagon with a rounded glow (94). Three torpedoes show as a row of red dots on the grid (58).
 
-Ship symbol: the orange K't'inga symbol at the grid's centre (92), traced: the orange pixels thresholded, the outer contour taken with OpenCV and simplified to 1.2 px, 36 points, kept in `tools/splash.py` in units of the symbol's longer side. The frame itself is not stored.
+Ship symbol: the orange K't'inga symbol at the grid's centre (92), traced: the orange pixels thresholded, the outer contour taken with OpenCV and simplified to 1.2 px, 36 points, kept as vector data in units of the symbol's longer side. The frame itself is not stored.
 
 Type: none. The screens carry only Klingon glyphs. The pack uses Chakra Petch, a free sans with cut-corner letters, chosen for the bevelled housings, not to match any film type.
 
-Glyphs: the labels are rows of angular, blade-like symbols (50, 94). Michael Okuda has said the Klingon screen graphics from *Star Trek IV* on "are randomly arranged symbols" based on the few writings in TOS and the first three films ([Memory Alpha, Klingonese](https://memory-alpha.fandom.com/wiki/Klingonese)). The pack's glyphs (`tools/glyphs.py`) are original shapes in that spirit: two or three tapered wedges each, generated from a seed. None is traced from a frame, a font or pIqaD.
+Glyphs: the labels are rows of angular, blade-like symbols (50, 94). Memory Alpha says Michael Okuda has admitted that the Klingon screen graphics from *Star Trek IV* on are "randomly arranged symbols", based on the few writings in TOS and the first three films ([Memory Alpha, Klingonese](https://memory-alpha.fandom.com/wiki/Klingonese)). The pack's glyphs are original shapes in that spirit, made in code: two or three tapered wedges each, generated from a seed. None is traced from a frame, a font or pIqaD.
 
 Emblem: not visible on the K't'inga bridge in the frames checked. Memory Alpha ([Klingon emblem](https://memory-alpha.fandom.com/wiki/Klingon_emblem)) says the K't'inga hulls in this film carried the three-coloured variant: a red long prong, with the second prong blue and the third pale green, on a yellow circle. The pack's welcome mark and favicon draw that: red and blue are the measured `lattice` and `bridge` colours; the yellow disc and the green arm are not measured on a frame.
 
@@ -76,4 +76,4 @@ Emblem: not visible on the K't'inga bridge in the frames checked. Memory Alpha (
 
 See [`LICENSE.txt`](LICENSE.txt). The pack, its artwork, its glyph shapes and its sounds are MIT; the sounds are original, synthesized in code, and inspired by the films. The font, Chakra Petch, is under the SIL Open Font License 1.1.
 
-Unofficial fan art. Star Trek, the Klingon emblem, the ships and related marks belong to their owners (CBS Studios / Paramount). Not affiliated with or endorsed by them. This repo ships no film images and no film audio.
+Unofficial, non-commercial fan art. Star Trek, the Klingon emblem, the ships and related marks are trademarks of their owners (CBS Studios / Paramount). Not affiliated with or endorsed by them. This repo ships no film images and no film audio.
