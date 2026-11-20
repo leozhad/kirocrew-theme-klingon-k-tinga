@@ -1,0 +1,48 @@
+{
+  "slug": "leozh-klingon-ktinga",
+  "name": "Klingon · K't'inga",
+  "emoji": "🗡️",
+  "level": 2,
+  "formatVersion": 1,
+  "fonts": [
+    {
+      "family": "Chakra Petch",
+      "file": "chakrapetch-regular.ttf",
+      "weight": 400,
+      "role": "sans"
+    },
+    {
+      "family": "Chakra Petch",
+      "file": "chakrapetch-medium.ttf",
+      "weight": 500,
+      "role": "sans"
+    },
+    {
+      "family": "Chakra Petch",
+      "file": "chakrapetch-semibold.ttf",
+      "weight": 600,
+      "role": "sans"
+    },
+    {
+      "family": "Chakra Petch",
+      "file": "chakrapetch-bold.ttf",
+      "weight": 700,
+      "role": "sans"
+    }
+  ],
+  "codeTheme": {
+    "dark": "synthwave-84",
+    "light": "synthwave-84"
+  },
+  "overlays": [
+    {
+      "id": "standby",
+      "src": "overlays/standby.html",
+      "position": "fullscreen",
+      "zIndex": 44,
+      "pointerEvents": true,
+      "animation": "continuous",
+      "trigger": "idle-900s"
+    }
+  ]
+}

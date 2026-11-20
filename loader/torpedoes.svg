@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 24" width="40" height="24">
+  <!-- Three torpedoes lighting in turn inside the red grid (frame 58).
+       `backwards` holds each dot's lit first keyframe through its delay, so
+       the first frame, which Kiro Crew shows under reduced motion, is all lit. -->
+  <style>
+    .t { opacity: 0.2; animation: lit 1.5s steps(1, end) infinite backwards; }
+    .t2 { animation-delay: 0.5s; } .t3 { animation-delay: 1s; }
+    @keyframes lit { 0% { opacity: 1; } 33% { opacity: 0.2; } }
+    @media (prefers-reduced-motion: reduce) { .t { animation: none; opacity: 1; } }
+  </style>
+  <path d="M1.0 12.0L7.0 1.5L33.0 1.5L39.0 12.0L33.0 22.5L7.0 22.5Z" fill="#000000" stroke="#ff1605" stroke-width="1.4"/>
+  <circle class="t" cx="11" cy="12" r="3.4" fill="#ff1605"/>
+  <circle class="t t2" cx="20" cy="12" r="3.4" fill="#ff1605"/>
+  <circle class="t t3" cx="29" cy="12" r="3.4" fill="#ff1605"/>
+</svg>
