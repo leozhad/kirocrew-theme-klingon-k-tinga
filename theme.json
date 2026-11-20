@@ -43,6 +43,16 @@
       "pointerEvents": true,
       "animation": "continuous",
       "trigger": "idle-900s"
+    },
+    {
+      "id": "ambient",
+      "src": "overlays/ambient.html",
+      "position": "fullscreen",
+      "zIndex": 0,
+      "pointerEvents": false,
+      "layer": "behind",
+      "animation": "continuous",
+      "trigger": "continuous"
     }
   ]
 }

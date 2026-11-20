@@ -6,6 +6,7 @@ An unofficial Kiro Crew theme modeled on the bridge of the Klingon K't'inga-clas
 - **Thinking indicator:** three red torpedoes lighting in turn inside the grid.
 - **Welcome mark:** the Klingon Empire emblem as the films show it, black prongs edged in gold on a pale disc ringed in gold, with the Klingon phrase *Qapla'!* ("Success!") under it. The emblem is traced from *Star Trek VI*; no frame of *The Motion Picture* shows it.
 - **Screensaver:** after 15 minutes with no key press, click, scroll or touch, the tactical display fills the screen: the red lattice inside its hexagon, the orange ship symbol in a blinking target box, a cyan-white contact closing in, torpedoes leaving the ship, rows of glyphs that change, and *Qapla'!* above the grid. Press a key or click to dismiss it; the click does not reach the app. The dashboard's nav, session list and chat header stay on top, so the display fills the area to their right. It does not run when the OS is set to reduce motion, and it stops after 30 minutes.
+- **Tracking display:** behind the chat, the K't'inga's screen tracks the Federation ships of the film: the refit Enterprise and the long-range shuttle Surak, outlines traced from frames of *The Motion Picture*, in the cyan-white of the display's contact. One ship at a time crosses slowly; a red box in the shape of the display's hexagon closes on it and blinks three times as it locks, three red lights step under it, and the Klingon emblem and two rows of glyphs sit beside it. Then the screen stays empty for half a minute or more. It is dim enough that body and muted text keep their contrast, takes no clicks, draws 20 frames a second while a ship is in view and nothing between ships, and pauses while the tab is hidden. When the OS asks for reduced motion, the chat shows one still frame of it instead.
 - **Desktop splash:** while the desktop app waits for its gateway, the same display in its housing, with the app's name under the grid and *Qapla'!* above it. It holds still when the OS asks for reduced motion.
 - **Code:** code blocks, diffs and the file viewer use the `synthwave-84` scheme (red, cyan, pink and yellow) in both modes.
 - **Light mode:** the same as dark. The films have no light screens.
@@ -14,15 +15,15 @@ An unofficial Kiro Crew theme modeled on the bridge of the Klingon K't'inga-clas
 - **Glyphs:** the Klingon-style glyphs on the splash and the screensaver are original, made in code. They are decoration: they spell nothing, as the film graphics did not.
 - **Sounds:** short, low console tones when the theme turns on or off, when a reply arrives, on notifications, and when an approval waits. Original sounds made in code, shaped after the 1979 film's electronic effects: warbling square-wave tones and falling two-note calls. None is taken from the film. They stay silent under reduced motion and while sounds are muted.
 
-Choosing this theme turns the screensaver on. The first time you pick it, Kiro Crew asks whether to play its sounds. Turn either off later under Settings → Display → Theme → Experience (Overlays for the screensaver, Sounds for the sounds).
+The first time you pick this theme, Kiro Crew asks which parts to turn on: Sounds, and Overlays (the tracking display and the screensaver). Change either later under Settings → Display → Theme → Experience.
 
 Needs Kiro Crew 0.13.0 or newer; older versions refuse the pack.
 
 Pick System under Settings → Display → Font Family to keep the OS font.
 
-| Chat | Screensaver | Desktop splash | Welcome mark | First pick |
-|---|---|---|---|---|
-| ![Pale text on black over a faint red triangle lattice, code blocks in red bevelled frames, the session list in a brown bevelled housing, an orange button](.github/screenshots/k-tinga-dark.png) | ![A bevelled brown housing round black glass: a red triangle lattice in a long hexagon, an orange ship symbol in a target box, a cyan contact, glyph rows, KIRO CREW below](.github/screenshots/k-tinga-screensaver.png) | ![Desktop splash: the K't'inga tactical display, a red lattice in a hexagon with the orange ship symbol and a cyan contact, KIRO CREW below](.github/screenshots/k-tinga-splash.jpg) | ![A new chat's welcome screen: the Klingon emblem, black prongs edged in gold on a pale disc, with Qapla'! under it, above a pale greeting and six starter cards](.github/screenshots/k-tinga-welcome.jpg) | ![The dialog "Enable Klingon · K't'inga experience?" with Sounds and Overlays checked, and Keep colors only and Save buttons](.github/screenshots/k-tinga-first-pick.jpg) |
+| Chat | Tracking display | Screensaver | Desktop splash | Welcome mark | First pick |
+|---|---|---|---|---|---|
+| ![Pale text on black over a faint red triangle lattice, code blocks in red bevelled frames, the session list in a brown bevelled housing, an orange button](.github/screenshots/k-tinga-dark.png) | ![Behind the chat, low on the page: a dim cyan-white outline of the refit Enterprise inside a red hexagonal box, three red lights under it, the Klingon emblem and two rows of glyphs beside it](.github/screenshots/k-tinga-tracking.png) | ![A bevelled brown housing round black glass: a red triangle lattice in a long hexagon, an orange ship symbol in a target box, a cyan contact, glyph rows, KIRO CREW below](.github/screenshots/k-tinga-screensaver.png) | ![Desktop splash: the K't'inga tactical display, a red lattice in a hexagon with the orange ship symbol and a cyan contact, KIRO CREW below](.github/screenshots/k-tinga-splash.jpg) | ![A new chat's welcome screen: the Klingon emblem, black prongs edged in gold on a pale disc, with Qapla'! under it, above a pale greeting and six starter cards](.github/screenshots/k-tinga-welcome.jpg) | ![The dialog "Enable Klingon · K't'inga experience?" with Sounds and Overlays checked, and Keep colors only and Save buttons](.github/screenshots/k-tinga-first-pick.jpg) |
 
 ## The two Klingon packs
 
@@ -71,6 +72,57 @@ Type: none. The screens carry only Klingon glyphs. The pack uses Chakra Petch, a
 Glyphs: the labels are rows of angular, blade-like symbols (50, 94). Memory Alpha says Michael Okuda has admitted that the Klingon screen graphics from *Star Trek IV* on are "randomly arranged symbols", based on the few writings in TOS and the first three films ([Memory Alpha, Klingonese](https://memory-alpha.fandom.com/wiki/Klingonese)). The pack's glyphs are original shapes in that spirit, made in code: two or three tapered wedges each, generated from a seed. None is traced from a frame, a font or pIqaD.
 
 Emblem: not visible in this film. None shows on the K't'inga hulls (frames 18 to 28, 33, 34, 46, 47, 52 to 55, brightened; the dark marks on the command pod in 46 are hull lettering) or on the bridge (42, 50, 58, 91, 92, 94). Memory Alpha ([Klingon emblem](https://memory-alpha.fandom.com/wiki/Klingon_emblem)) says the K't'inga cruisers here carried a three-coloured emblem; no frame confirms it, so the pack draws the emblem from *Star Trek VI* (see "The emblem" below).
+
+### The tracking display
+
+Each pack's `overlays/ambient.html` is an animated background in the spirit of the Matrix packs' digital rain, drawn behind the chat: Federation ships crossing the screen as if tracked by the Klingon ship, era-true per pack, with outlines traced from the films (asked for on Nov 20, 2026).
+
+#### What the films' Klingon screens show
+
+The films do put Federation ships on Klingon targeting screens:
+
+| Film, frame | Screen | What it shows |
+|---|---|---|
+| III, Chapter 7, 775 | Kruge's Bird-of-Prey monitor | the Enterprise as a cyan line-art front view over a lattice, pink glyphs under it |
+| VI, Chapter 12, 1830, 1834, 1835 | Chang's targeting display | a red triangle lattice in an elongated hexagon, glyph columns on both sides, the Enterprise-A as an orange icon. A triangle of two slanted bars closes round it: orange in 1834, lit yellow in 1835, with a bar and two ticks under it |
+| V, Chapter 5, 542, 543 | Klaa's targeting display | its target, the probe *Pioneer 10* ([Memory Alpha, Pioneer 10](https://memory-alpha.fandom.com/wiki/Pioneer_10)), and an amber bracket that closes on it (the screensaver uses these) |
+| TMP, Chapter 1, 58, 92, 94 | the K't'inga's tactical display | a cyan-white contact (V'Ger); a red hexagon pointed at both ends that frames the Klingon ship's own orange symbol (94; absent in 92); three red dots on the grid in 58, which look to be the torpedoes in flight after the firing in 52 to 57 |
+
+In *The Motion Picture* the K't'inga's screen tracks V'Ger, not a Federation ship: none of TrekCore's 113 frames of Chapter 1, the only chapter with Klingon screens, shows a Federation ship on one. Nothing on it closes on or locks a contact either: the hexagon frames the Klingon ship itself, and the contact sits outside it (94). So the K't'inga pack's lock is ours: the film's own Federation ships, in the screen's contact colour, inside a box in the shape of that hexagon, which closes and locks; and three red lights, in the dots' colour, that step under it.
+
+The lit reticle's colour is measured on VI 1835 (the triangle's box, lit pixels, the method above): hue 48° to 49°, saturation 0.91 to 0.97. The build keeps it as `BP.lock` (49°, 0.97), and the source repo's frame check re-measures it.
+
+#### Which ships, and why
+
+| Pack | Ship | Why it fits | Traced from |
+|---|---|---|---|
+| K't'inga | the refit Enterprise (NCC-1701) | the film's starship, sent to intercept V'Ger after it destroys the K't'inga cruisers | TMP, Chapter 14, frame 626: on its way to V'Ger, three-quarter view from above |
+| K't'inga | the long-range shuttle *Surak* | the Federation courier that brings Spock from Vulcan to the Enterprise ([Memory Alpha, Long range shuttle](https://memory-alpha.fandom.com/wiki/Long_range_shuttle)) | TMP, Chapter 13, frame 572: side view, bow right |
+| Bird-of-Prey | the Enterprise, as Kruge's monitor drew it | Kruge's Bird-of-Prey attacks it in III ([Memory Alpha, USS Enterprise (NCC-1701)](https://memory-alpha.fandom.com/wiki/USS_Enterprise_(NCC-1701))); Klaa's pursues the Enterprise-A in V, Chang's attacks it in VI ([Memory Alpha, USS Enterprise (NCC-1701-A)](https://memory-alpha.fandom.com/wiki/USS_Enterprise_(NCC-1701-A))). The refit and the -A are the same design | III, Chapter 7, frame 775: the monitor's own line art |
+| Bird-of-Prey | USS *Grissom* (NCC-638) | destroyed by Kruge's Bird-of-Prey over the Genesis planet ([Memory Alpha, USS Grissom (NCC-638)](https://memory-alpha.fandom.com/wiki/USS_Grissom_(NCC-638))) | III, Chapter 2, frame 233: over Genesis, end-on view |
+| Bird-of-Prey | USS *Excelsior* (NCC-2000) | with the Enterprise-A, battles Chang's Bird-of-Prey at Khitomer ([Memory Alpha, USS Excelsior (NCC-2000)](https://memory-alpha.fandom.com/wiki/USS_Excelsior_(NCC-2000))) | VI, Chapter 1, frame 47: three-quarter front view, bow left |
+
+Checked and not used: Epsilon IX (a station that tracks the Klingons, and does not cross a screen); the travel pod and work bees in TMP (too small to read as ships); the *Saratoga* in IV (no Klingon scene); TMP 611, 612 and 631 (the Enterprise head-on, which does not read as crossing); TMP 430 (Chapter 10, a three-quarter view from below: traced first, but at 155 to 230 px the edge-on saucer and the nacelles read weakly as the Enterprise; 626 shows the saucer from above). Chapters 4, 10, 11, 13, 14, 15, 25 and 27 were looked through for these; the *Excelsior*'s side view in VI 1764 (smeared by its jump to warp); the top-view schematics in III 181 and VI 1823 (Federation screens, not Klingon ones); Chang's orange Enterprise icon in VI 1834 (the reticle overlaps it, so it cannot be traced cleanly; Kruge's line art is the clean Klingon-screen Enterprise).
+
+#### How the ships are traced
+
+The same way as the K't'inga symbol and the emblem: vector data made by the source repo's tracer (OpenCV); the frames are not stored.
+
+- **Space shots** (626, 572, 47): the lit hull against black space, thresholded on HSV value (15, 22 and 40 out of 255) inside a box round the ship, closed (a 13 px kernel for the *Surak*, so its painted dark bands do not cut notches; 9 and 5 px for the others), the largest part kept, smoothed with a Gaussian blur; the outer contour and the large holes (the open space between hull, pylons and nacelles) taken with OpenCV and simplified to 1.4 px. Smaller holes are filled.
+- **The *Grissom*** (233) sits against a planet, so its pixels are a GrabCut segmentation of its box, gated on value 40 (the planet's night side is 25 to 49 next to the ship; at 60 the dark underside of the saucer dropped out and the saucer looked cut off from its pylons). Holes under 8,000 px² are filled.
+- **Kruge's monitor** (775): every contour of the cyan pixels (hue 197° ± 16°, saturation and value floors 80 and 110), filled even-odd so the gaps between the lines stay open: the monitor's own line art. Stray specks outside the drawing (outer contours under 25 px²) are dropped.
+
+The source repo's frame check fills each outline on its frame and compares it with the frame's lit ship pixels, using the tracer's own threshold, so it checks that the data is still the trace of that frame, not that the segmentation is right (that was checked by eye, outline over frame). IoU at trace time: 0.97 (Enterprise, 626), 0.92 (*Surak*), 0.91 (Kruge's Enterprise), 0.89 (*Grissom*, whose outline comes from GrabCut, not from that threshold) and 0.93 (*Excelsior*). Each floor is that value minus 0.02, and the number of shapes must not change.
+
+#### How it moves, and how bright it is
+
+- **One ship at a time.** The first crosses 6 s after the page loads; each crossing takes 52 to 68 s, mostly across the lower part of the page; then the screen stays empty for 32 to 52 s. The order is shuffled from a fixed seed, so every ship of the pack comes round before one repeats.
+- **The lock.** When the ship is well inside the open area, the reticle appears at 2.3 to 2.4 times its size and closes on the ship in 2.6 s. The K't'inga's box then blinks three times (0.3 s on, 0.2 s off) and holds, and its three red lights step every 0.9 s; the Bird-of-Prey's triangle flashes twice (0.25 s lit, 0.15 s orange) and stays lit. That is at most 2.5 flashes in a second, in thin lines, with a luminance change under 0.05: under WCAG 2.3.1's three flashes a second. The readout fades in on the side the ship came from, stays there, and one glyph changes every 0.8 s. The lock lets go before the ship leaves.
+- **Cost.** A 20 fps timer while a ship is in view, drawing only the part of the screen it covers; no drawing between ships; paused while the tab is hidden.
+- **Brightness.** Each colour keeps its film hue and saturation, and its brightness is set in luminance so the brightest pixel the display draws stays under 95% of what keeps the body and muted text at their floors over it (body and bright text 7:1, muted 4.5:1). The Bird-of-Prey's ceiling is lower (luminance 0.023 against 0.051) because its muted text is the orange of the target triangles. The accent and status colours are not held to this: over the brightest pixel, K't'inga's error red falls to 2.7:1, its accent to 3.0:1 and its info, aim and warning colours to 3.6 to 4.0:1, and the Bird-of-Prey's error red to 3.6:1. Holding them too would make the display nearly black. Those pixels are 1.6 px strokes, about 0.6% of the screen, and message bubbles, code blocks, the composer and the session list are opaque black, so only accent or status text drawn straight on the chat background could meet one.
+- **Reduced motion.** Kiro Crew 0.13 does not mount overlays when the OS asks for reduced motion, so each pack's `overrides.css` shows one still frame of the display (the first ship, locked, its readout beside it) in the chat background instead, as an SVG that the build draws from the same data. If the host does mount it under reduced motion, the overlay draws the same still and never animates. The still also shows with Overlays turned off, when the OS asks for reduced motion: CSS cannot see that setting.
+
+Not from the films: ships crossing a dashboard; the Klingon emblem beside the readout (the films' targeting screens do not carry it; it is there by request); the K't'inga screen tracking Federation ships (it tracks V'Ger in the film); the K't'inga box closing on and locking a ship, and the three red lights stepping under it (see above); Chang's reticle from VI on the ships of III (Kruge's Enterprise, the *Grissom*); end-on and three-quarter views crossing sideways (Kruge's front-view line art, the *Grissom*, the *Excelsior*, the Enterprise from 626); the readout's arrangement.
 
 ### The emblem
 
