@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Klingon · K't'inga tracking display</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.2s linear; }
+  canvas.on { opacity: 1; }
+</style>
+</head>
+<body>
+<canvas id="screen" aria-hidden="true"></canvas>
+<!--
+  Pack: kirocrew-theme-klingon, K't'inga (MIT). The ship outlines are traced from
+  Star Trek film frames, and the Klingon emblem from Star Trek VI: fan art of
+  designs owned by CBS Studios / Paramount.
+-->
+<script>
+/*
+ * Ambient tracking display, shared by the two Klingon packs. Kiro Crew mounts it
+ * with `layer: "behind"`, so it paints under the nav, the session list, the
+ * messages and the composer, and the host makes it click-through. It takes no
+ * input.
+ *
+ * A Klingon ship's screen tracking Federation ships: one ship at a time crosses
+ * the open space of the page, slowly, as an outline in the display's colour. A
+ * target reticle closes on it and locks, a readout of Klingon-style glyphs
+ * (original, made in code) and the Klingon emblem sit beside it, and the lock
+ * lets go before the ship leaves. Then the screen stays empty for half a
+ * minute or more. The pack's scene (below) draws the reticle and the readout
+ * in its own film's style. The source repo's build fills in the colours, the
+ * traced ships, the glyph shapes and the emblem (C).
+ *
+ * Calm by design: the colours are dim enough that the pack's body and muted
+ * text keep their contrast floors over the brightest pixel; a 20 fps timer
+ * while a ship is in view, and no drawing at all between ships; it pauses
+ * while the tab is hidden. Under reduced motion it draws one still
+ * tracking frame and never animates (Kiro Crew 0.13 does not mount overlays
+ * then, so the pack's CSS shows the same still frame instead).
+ *
+ * Runs inside the dashboard's sandboxed overlay iframe (no network, no storage).
+ * Test hooks for the source repo's harness: window.__klAmbient.seek(seconds),
+ * .rate(x), .info().
+ */
+(() => {
+  'use strict'
+  const C = {"ship":"#2a453e","ship_fill":"#0b1110","ship_glow":"#213430","box":"#800b03","box_dim":"#580802","torpedo":"#761812","torpedo_dim":"#430e0a","glyph":"#32362b","seed":1979,"order":["enterprise-tmp","surak"],"ships":{"enterprise-tmp":{"method":"space","h":0.532,"facing":0,"shapes":[[[-0.5,-0.132],[-0.499,-0.1241],[-0.4941,-0.1153],[-0.4941,-0.0966],[-0.4911,-0.0788],[-0.4773,-0.0552],[-0.4645,-0.0424],[-0.4438,-0.0276],[-0.3916,-0.003],[-0.3266,0.0167],[-0.231,0.0345],[-0.1837,0.0404],[-0.1177,0.0443],[-0.0281,0.0443],[-0.0232,0.0483],[-0.0222,0.0581],[-0.0192,0.0611],[-0.0113,0.0581],[-0.0034,0.0581],[0.0409,0.0719],[0.0586,0.0887],[0.0557,0.0975],[0.0567,0.1054],[0.0734,0.1143],[0.0764,0.1202],[0.0734,0.1251],[0.0567,0.13],[0.0419,0.1389],[0.032,0.1507],[0.0261,0.1655],[0.0241,0.1783],[0.0271,0.198],[0.036,0.2138],[0.0685,0.2443],[0.0882,0.2552],[0.1138,0.2631],[0.1601,0.266],[0.1828,0.2631],[0.1975,0.2581],[0.2251,0.2532],[0.2429,0.2453],[0.2665,0.2276],[0.2823,0.2197],[0.2852,0.2108],[0.2793,0.1921],[0.2724,0.1842],[0.2576,0.1744],[0.2507,0.1655],[0.2419,0.1635],[0.2389,0.1606],[0.2379,0.1547],[0.2429,0.1488],[0.3118,0.1182],[0.3177,0.1192],[0.3217,0.1232],[0.3276,0.1113],[0.4261,0.069],[0.4468,0.07],[0.4724,0.0808],[0.4803,0.0887],[0.4852,0.0867],[0.4911,0.0749],[0.498,0.0729],[0.5,0.07],[0.4901,0.0571],[0.4872,0.0483],[0.4803,0.0414],[0.4773,0.0414],[0.4793,0.0493],[0.4764,0.0532],[0.4685,0.0522],[0.4202,0.0148],[0.4143,0.0079],[0.4133,-0.001],[0.4163,-0.0049],[0.4212,-0.0059],[0.4399,0.0059],[0.4458,0.0128],[0.4626,0.0207],[0.366,-0.068],[0.365,-0.0749],[0.3729,-0.1074],[0.3719,-0.1261],[0.364,-0.1468],[0.3463,-0.1675],[0.3217,-0.1862],[0.2813,-0.2079],[0.2232,-0.2296],[0.1788,-0.2404],[0.1739,-0.2443],[0.1591,-0.2443],[0.1286,-0.2512],[0.1089,-0.2532],[0.1,-0.2562],[0.0803,-0.2571],[0.0655,-0.2611],[0.0458,-0.2601],[0.0369,-0.264],[0.0172,-0.2631],[-0.0153,-0.266],[-0.1305,-0.265],[-0.2291,-0.2542],[-0.2409,-0.2493],[-0.2675,-0.2453],[-0.2734,-0.2463],[-0.2773,-0.2522],[-0.2803,-0.2532],[-0.2803,-0.2463],[-0.2862,-0.2414],[-0.3571,-0.2236],[-0.4241,-0.197],[-0.4606,-0.1734],[-0.4714,-0.1695],[-0.4921,-0.1478]],[[0.3906,0.0345],[0.3916,0.0463],[0.3867,0.0522],[0.3601,0.066],[0.3463,0.067],[0.3394,0.0749],[0.3325,0.0768],[0.3286,0.0808],[0.3197,0.0818],[0.232,0.1271],[0.2241,0.1261],[0.2212,0.132],[0.2123,0.1379],[0.2005,0.1369],[0.1857,0.1291],[0.1818,0.1241],[0.1818,0.1172],[0.1867,0.1133],[0.1975,0.1172],[0.2025,0.1143],[0.2094,0.0975],[0.2103,0.0867],[0.1966,0.0798],[0.1847,0.07],[0.1384,0.0502],[0.1345,0.0433],[0.1355,0.0325],[0.1404,0.0286],[0.1837,0.0207],[0.233,0.0079],[0.2438,0.0099],[0.2448,0.0069],[0.2517,0.002],[0.2901,-0.0099],[0.3256,-0.0296],[0.3305,-0.0296],[0.3355,-0.0256],[0.3433,-0.002],[0.3562,0.0099],[0.3611,0.0187],[0.3739,0.0207]]]},"surak":{"method":"space","h":0.2863,"facing":1,"shapes":[[[0.5,0.0161],[0.4956,0.0117],[0.4452,-0.0178],[0.4278,-0.0265],[0.4147,-0.03],[0.4025,-0.0448],[0.3912,-0.0535],[0.3138,-0.0648],[0.2789,-0.0857],[0.1614,-0.1214],[0.1327,-0.1414],[0.1223,-0.1432],[0.0457,-0.0927],[0.01,-0.064],[-0.0239,-0.0422],[-0.0274,-0.0387],[-0.0292,-0.0309],[-0.0326,-0.0283],[-0.1884,-0.037],[-0.198,-0.0413],[-0.413,-0.0544],[-0.4495,-0.0553],[-0.4547,-0.0535],[-0.4695,-0.0535],[-0.4739,-0.0509],[-0.4739,-0.0457],[-0.4661,-0.037],[-0.453,-0.0318],[-0.4373,-0.017],[-0.4225,-0.0126],[-0.3399,-0.0057],[-0.3285,0.0004],[-0.2798,0.0048],[-0.2659,0.0048],[-0.2598,0.0022],[-0.2485,0.0013],[-0.2415,0.0039],[-0.2354,0.0091],[-0.0561,0.0274],[-0.0527,0.03],[-0.0518,0.0361],[-0.0553,0.0405],[-0.0953,0.0648],[-0.2859,0.064],[-0.2937,0.0605],[-0.3146,0.0587],[-0.4809,0.0553],[-0.4869,0.0579],[-0.4965,0.0579],[-0.5,0.0622],[-0.4782,0.0814],[-0.4713,0.0849],[-0.4069,0.0901],[-0.3973,0.0936],[-0.3486,0.0962],[-0.3312,0.0927],[-0.3216,0.0988],[-0.2929,0.1014],[-0.2702,0.1014],[-0.1684,0.1101],[-0.0205,0.1179],[0.0065,0.1205],[0.01,0.1223],[0.0631,0.1223],[0.0857,0.1275],[0.158,0.1319],[0.2015,0.131],[0.2293,0.1379],[0.2406,0.1432],[0.2459,0.1432],[0.2502,0.1379],[0.2537,0.1266],[0.2702,0.0918],[0.2694,0.0857],[0.2546,0.0727],[0.2493,0.0657],[0.2493,0.057],[0.252,0.0535],[0.2702,0.0527],[0.2972,0.0544],[0.3033,0.0587],[0.3094,0.0587],[0.3172,0.0631],[0.3547,0.0674],[0.393,0.0692],[0.399,0.0648],[0.4104,0.0648],[0.4191,0.0709],[0.4443,0.0692],[0.4478,0.0718],[0.4487,0.0779],[0.4513,0.0814],[0.4634,0.0849],[0.4678,0.0814],[0.4695,0.0727],[0.4756,0.0666],[0.4791,0.0544],[0.4826,0.0518],[0.4922,0.0518],[0.5,0.0466],[0.5,0.044],[0.4939,0.0379],[0.4939,0.03],[0.4991,0.0213]],[[0.2319,0.1232],[0.2276,0.1275],[0.2006,0.1258],[0.1902,0.1214],[0.1484,0.1171],[0.0274,0.111],[-0.017,0.1057],[-0.0361,0.1057],[-0.0431,0.1023],[-0.044,0.0901],[-0.0466,0.0883],[-0.0918,0.0849],[-0.0953,0.0822],[-0.0962,0.0762],[-0.0918,0.0718],[0.0744,0.0762],[0.1484,0.0753],[0.1501,0.0718],[0.1466,0.0674],[0.1475,0.0614],[0.151,0.0587],[0.1571,0.0587],[0.1623,0.0518],[0.1849,0.0509],[0.1963,0.0535],[0.2093,0.0535],[0.2145,0.057],[0.2198,0.0648],[0.225,0.0796],[0.2276,0.1092],[0.2319,0.1188]]]}},"glyphs":[[[[0.198,0.009],[0.399,1.0],[0.465,-0.009]],[[0.005,0.18],[0.72,0.043],[-0.005,-0.02]],[[0.36,0.716],[0.76,0.675],[0.387,0.526]],[[0.349,0.823],[0.76,0.818],[0.41,0.601]]],[[[0.221,0.062],[0.035,0.984],[0.211,0.938],[0.397,0.016]],[[0.72,-0.005],[0.0,0.082],[0.72,0.165]],[[0.117,0.555],[-0.04,0.935],[0.271,0.665]]],[[[0.414,0.05],[0.123,0.973],[0.315,0.95],[0.607,0.027]],[[0.711,0.818],[0.0,0.984],[0.729,1.022]],[[0.233,0.841],[0.76,1.0],[0.345,0.638]]],[[[0.267,0.075],[0.223,0.995],[0.42,0.925],[0.464,0.005]],[[0.297,0.401],[0.76,0.634],[0.406,0.256]],[[0.291,0.323],[-0.04,0.636],[0.403,0.53]]],[[[0.196,-0.002],[0.313,1.0],[0.458,0.002]],[[0.385,0.66],[0.76,0.188],[0.253,0.514]]],[[[0.282,0.049],[0.011,0.973],[0.221,0.951],[0.491,0.027]],[[0.284,0.712],[0.719,0.243],[0.148,0.529]]],[[[0.381,-0.048],[0.232,1.0],[0.696,0.048]],[[0.44,0.588],[0.76,0.171],[0.317,0.455]]],[[[0.406,-0.058],[0.174,1.0],[0.71,0.058]],[[0.705,-0.01],[0.0,0.2],[0.735,0.17]],[[0.482,0.265],[-0.04,0.01],[0.372,0.419]]],[[[0.351,0.069],[0.255,0.99],[0.457,0.931],[0.553,0.01]],[[0.722,0.837],[0.0,0.902],[0.718,1.003]],[[0.469,0.54],[0.76,0.191],[0.347,0.382]]],[[[0.182,0.005],[0.35,1.0],[0.445,-0.005]],[[0.406,0.602],[-0.04,0.415],[0.271,0.786]]],[[[0.246,0.063],[0.092,0.984],[0.298,0.937],[0.451,0.016]],[[-0.017,0.184],[0.72,0.195],[0.017,-0.024]],[[0.3,0.414],[-0.04,0.43],[0.236,0.63]],[[0.22,0.402],[-0.04,0.657],[0.321,0.61]]],[[[0.241,-0.03],[0.184,1.0],[0.533,0.03]],[[0.288,0.637],[-0.04,0.58],[0.191,0.819]],[[0.23,0.361],[-0.04,0.743],[0.367,0.513]]],[[[0.43,0.062],[0.273,0.983],[0.48,0.938],[0.637,0.017]],[[-0.004,1.007],[0.72,0.952],[0.004,0.833]],[[0.445,0.544],[-0.04,0.573],[0.416,0.739]]],[[[0.519,-0.052],[0.248,1.0],[0.778,0.052]],[[0.382,0.79],[0.76,0.658],[0.368,0.578]],[[0.331,0.688],[0.76,0.904],[0.487,0.509]]],[[[0.508,-0.06],[0.115,1.0],[0.743,0.06]],[[0.243,0.634],[-0.04,0.754],[0.255,0.842]]],[[[0.389,0.047],[0.08,0.971],[0.281,0.953],[0.59,0.029]],[[0.473,0.381],[0.76,0.0],[0.333,0.213]],[[0.286,0.736],[0.76,0.651],[0.291,0.543]]],[[[0.332,0.074],[0.265,0.994],[0.442,0.926],[0.509,0.006]],[[0.377,0.339],[-0.04,0.5],[0.405,0.541]],[[0.402,0.252],[-0.04,0.344],[0.391,0.479]]],[[[0.393,-0.037],[0.23,1.0],[0.646,0.037]],[[-0.003,0.178],[0.72,0.103],[0.003,-0.018]],[[0.247,0.628],[-0.04,0.945],[0.37,0.825]]],[[[0.259,0.054],[0.028,0.976],[0.238,0.946],[0.469,0.024]],[[0.266,0.578],[-0.04,0.504],[0.148,0.756]]],[[[0.218,0.007],[0.415,1.0],[0.517,-0.007]],[[0.704,0.816],[0.0,1.033],[0.736,1.024]],[[0.473,0.713],[0.76,0.32],[0.321,0.529]]],[[[0.403,-0.027],[0.362,1.0],[0.694,0.027]],[[-0.012,0.175],[0.72,0.168],[0.012,-0.015]],[[0.533,0.423],[0.76,0.209],[0.447,0.204]],[[0.467,0.566],[-0.04,0.476],[0.38,0.773]]],[[[0.494,-0.045],[0.375,1.0],[0.816,0.045]],[[0.715,-0.023],[0.0,0.114],[0.725,0.183]],[[0.533,0.462],[0.026,0.382],[0.467,0.645]]],[[[0.222,0.004],[0.395,1.0],[0.516,-0.004]],[[0.314,0.337],[-0.04,0.76],[0.446,0.499]]],[[[0.506,0.04],[0.111,0.966],[0.301,0.96],[0.696,0.034]],[[0.431,0.563],[0.76,0.428],[0.413,0.352]]],[[[0.209,-0.014],[0.24,1.0],[0.479,0.014]],[[0.311,0.276],[-0.04,0.359],[0.298,0.484]]],[[[0.451,-0.04],[0.263,1.0],[0.707,0.04]],[[0.721,-0.009],[0.0,0.071],[0.719,0.169]],[[0.411,0.599],[-0.04,0.477],[0.308,0.79]]],[[[0.471,0.054],[0.229,0.977],[0.428,0.946],[0.67,0.023]],[[0.725,0.82],[0.0,0.881],[0.715,1.02]],[[0.432,0.331],[-0.006,0.58],[0.497,0.552]]],[[[0.218,0.088],[0.292,1.008],[0.478,0.912],[0.404,-0.008]],[[0.295,0.806],[0.76,1.0],[0.435,0.616]]]],"emblem":{"unit":100,"box":[-1.198,-2.101,1.52,1.146],"discR":0.8867,"edge":0.0466,"outer":"M-22.10 -98.20C-7.40 -100.60 6.30 -100.60 21.00 -98.50C14.60 -123.80 9.70 -149.40 5.10 -175.00C3.10 -186.80 3.10 -198.70 -0.80 -210.10C-8.50 -181.20 -7.20 -138.70 -22.10 -98.20ZM95.90 30.50C89.10 48.20 79.50 62.00 66.70 75.80C98.10 78.10 131.90 75.80 152.00 47.80C129.80 40.20 121.30 44.90 95.90 30.50ZM-113.60 114.60C-96.00 99.90 -89.90 85.90 -66.50 75.60C-79.60 62.10 -89.20 48.10 -95.90 30.50C-115.90 54.30 -127.70 84.80 -113.60 114.60Z","prongs":"M-39.20 -30.60C-32.70 -15.10 -12.10 19.10 -1.60 32.20C7.00 23.50 31.40 -17.70 36.80 -29.80C31.80 -49.80 23.50 -69.10 18.30 -89.20C11.30 -116.30 7.30 -144.10 0.40 -171.20C-4.80 -156.50 -11.20 -113.50 -16.40 -93.90C-18.00 -87.80 -21.10 -82.70 -23.30 -76.90C-28.90 -61.80 -34.60 -46.00 -39.20 -30.60ZM-111.20 102.70C-106.70 99.10 -103.10 94.70 -98.90 90.80C-86.10 79.30 -70.80 69.70 -54.60 63.80C-42.80 59.50 -29.90 60.10 -18.10 56.80C-21.90 45.90 -46.40 5.40 -54.20 -3.60C-60.80 2.00 -64.70 9.50 -70.70 15.60C-78.90 23.70 -88.30 31.10 -95.70 40.00C-109.30 56.30 -118.20 81.90 -111.20 102.70ZM14.40 58.40C18.80 59.10 23.30 58.90 27.70 59.80C60.00 66.10 112.70 83.30 138.80 53.70C123.90 47.30 108.00 45.40 93.80 36.70C76.30 26.10 65.20 10.20 50.70 -3.60C44.70 3.40 16.10 50.80 14.40 58.40Z","gold":"#46311b","disc":"#3d393e","prong":"#0d0a09"}}
+  const FPS = 20
+  const FRAME = 1000 / FPS
+  const TAU = Math.PI * 2
+
+  const canvas = document.getElementById('screen')
+  const ctx = canvas.getContext('2d')
+  let W = 0, H = 0, DPR = 1, OX = 0, OY = 0
+
+  // Seeded random (a 32-bit LCG), so the order of ships and paths is the same
+  // on every load. The still frame draws from its own generator.
+  const lcg = s => () => ((s = (Math.imul(s, 1103515245) + 12345) >>> 0) / 4294967296)
+  let rnd = lcg(C.seed)
+  const pick = (a, r = rnd) => a[(r() * a.length) | 0]
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x))
+  const ease = k => 1 - Math.pow(1 - clamp(k, 0, 1), 3)
+  const sstep = k => { k = clamp(k, 0, 1); return k * k * (3 - 2 * k) }
+
+  // ── drawing helpers shared by the scenes ──
+  function shapePath(c, shapes, x, y, s, flip) {
+    c.beginPath()
+    for (const sh of shapes) {
+      sh.forEach(([px, py], i) => {
+        const X = x + flip * px * s, Y = y + py * s
+        if (i) c.lineTo(X, Y); else c.moveTo(X, Y)
+      })
+      c.closePath()
+    }
+  }
+  // One glyph (a list of polygons in a 0.72 x 1 box), h tall, top-left at (x, y).
+  function glyph(g, x, y, h) {
+    ctx.beginPath()
+    for (const poly of g) poly.forEach(([px, py], i) => i ? ctx.lineTo(x + px * h, y + py * h) : ctx.moveTo(x + px * h, y + py * h))
+    ctx.closePath()
+    ctx.fill()
+  }
+  const glyphRow = (row, x, y, h) => { row.forEach((g, i) => glyph(g, x + i * 0.9 * h, y, h)) }
+  const glyphCol = (col, x, y, h) => { col.forEach((g, i) => glyph(g, x, y + i * 1.25 * h, h)) }
+  const newRow = (n, r = rnd) => Array.from({ length: n }, () => pick(C.glyphs, r))
+  // Readouts change with Math.random, so the seeded schedule stays the same.
+  const swapGlyph = row => { row[(Math.random() * row.length) | 0] = C.glyphs[(Math.random() * C.glyphs.length) | 0] }
+
+  // Cached sprites: a ship at one width, the emblem at one height.
+  const sprites = new Map()
+  function shipSprite(key, w, flip) {
+    const id = `${key}|${Math.round(w)}|${flip}|${DPR}`
+    if (sprites.has(id)) return sprites.get(id)
+    const sh = C.ships[key]
+    const pad = 8
+    const cw = Math.ceil(w + 2 * pad), chh = Math.ceil(w * sh.h + 2 * pad)
+    const cv = document.createElement('canvas')
+    cv.width = Math.ceil(cw * DPR); cv.height = Math.ceil(chh * DPR)
+    const c = cv.getContext('2d')
+    c.setTransform(DPR, 0, 0, DPR, 0, 0)
+    shapePath(c, sh.shapes, cw / 2, chh / 2, w, flip)
+    if (sh.method === 'lines') {
+      // Kruge's monitor drew the ship as line art: the traced lines are the shape.
+      c.shadowColor = C.ship_glow; c.shadowBlur = 4 * DPR
+      c.fillStyle = C.ship
+      c.fill('evenodd')
+    } else {
+      c.fillStyle = C.ship_fill
+      c.fill('evenodd')
+      c.shadowColor = C.ship_glow; c.shadowBlur = 5 * DPR
+      c.strokeStyle = C.ship
+      c.lineWidth = 1.6
+      c.lineJoin = 'round'
+      c.stroke()
+    }
+    const out = { cv, w: cw, h: chh }
+    sprites.set(id, out)
+    return out
+  }
+  function emblemSprite(h) {
+    const id = `emblem|${Math.round(h)}|${DPR}`
+    if (sprites.has(id)) return sprites.get(id)
+    const E = C.emblem
+    const [x0, y0, x1, y1] = E.box
+    const r = h / (y1 - y0)
+    const cw = Math.ceil((x1 - x0) * r + 4), chh = Math.ceil(h + 4)
+    const cv = document.createElement('canvas')
+    cv.width = Math.ceil(cw * DPR); cv.height = Math.ceil(chh * DPR)
+    const c = cv.getContext('2d')
+    c.setTransform(DPR, 0, 0, DPR, 0, 0)
+    c.translate(2 - x0 * r, 2 - y0 * r)
+    const s = r / E.unit
+    c.fillStyle = E.gold
+    c.beginPath(); c.arc(0, 0, 1.008 * r, 0, TAU); c.fill()
+    c.save(); c.scale(s, s)
+    c.fill(new Path2D(E.outer))
+    c.restore()
+    c.fillStyle = E.disc
+    c.beginPath(); c.arc(0, 0, E.discR * r, 0, TAU); c.fill()
+    c.save(); c.scale(s, s)
+    const prongs = new Path2D(E.prongs)
+    c.strokeStyle = E.gold; c.lineWidth = 2 * E.edge * E.unit; c.lineJoin = 'round'
+    c.fillStyle = E.gold; c.fill(prongs); c.stroke(prongs)
+    c.fillStyle = E.prong; c.fill(prongs)
+    c.restore()
+    const out = { cv, w: cw, h: chh }
+    sprites.set(id, out)
+    return out
+  }
+  const blit = (sp, x, y) => ctx.drawImage(sp.cv, x - sp.w / 2, y - sp.h / 2, sp.w, sp.h)
+  // A ship is drawn about a sixth of the open area wide.
+  const shipWidth = sh => clamp(0.16 * (W - OX), 120, 230) * (sh.scale || 1)
+
+  // ── scene ──
+  /*
+   * The Motion Picture: the K't'inga's tactical display (frames 58, 92, 94),
+   * tracking the Federation ships of the film (the refit Enterprise, frame
+   * 626; the long-range shuttle Surak, frame 572). The ship is drawn in the cyan-white of the display's
+   * contact (94). The box has the shape of the display's red hexagon, pointed
+   * at both ends (94; in the film it frames the Klingon ship's own symbol and
+   * locks on nothing): it closes on the ship, blinks three times when it
+   * locks, then holds. Three red lights in the colour of the dots on the grid
+   * in frame 58 sit in a row under it and light in turn while the lock holds. Beside it: the Klingon
+   * emblem and two rows of glyphs in the pale label colour, one glyph changing
+   * at a time.
+   */
+  function hexPath(cx, cy, hw, hh, d) {
+    ctx.beginPath()
+    ctx.moveTo(cx - hw, cy); ctx.lineTo(cx - hw + d, cy - hh); ctx.lineTo(cx + hw - d, cy - hh)
+    ctx.lineTo(cx + hw, cy); ctx.lineTo(cx + hw - d, cy + hh); ctx.lineTo(cx - hw + d, cy + hh)
+    ctx.closePath()
+  }
+  // The box's tight fit round a ship; its points reach past the bow and stern.
+  function boxSize(s) {
+    const hh = 0.5 * s.w * s.sh.h + 12
+    return { hw: 0.5 * s.w + 0.6 * hh + 6, hh }
+  }
+  function drawReticle(s) {
+    const grow = 1 + 1.4 * (1 - ease(s.k))
+    const tight = boxSize(s)
+    const hh = tight.hh * grow, hw = tight.hw * grow, d = 0.6 * hh
+    const locked = s.lockAge >= 0
+    // Three blinks as it locks (0.3 s on, 0.2 s off), then steady.
+    const on = !locked || s.lockAge > 1.5 || (s.lockAge % 0.5) < 0.3
+    ctx.lineJoin = 'miter'
+    if (on) {
+      ctx.strokeStyle = locked ? C.box : C.box_dim
+      ctx.lineWidth = 1.6
+      hexPath(s.x, s.y, hw, hh, d); ctx.stroke()
+    }
+    const ty = s.y + tight.hh + 10
+    if (locked) {
+      const lit = Math.floor(s.lockAge / 0.9) % 3
+      for (let i = 0; i < 3; i++) {
+        ctx.fillStyle = i === lit ? C.torpedo : C.torpedo_dim
+        ctx.beginPath(); ctx.arc(s.x + (i - 1) * 9, ty, 2.4, 0, TAU); ctx.fill()
+      }
+    }
+    return [s.x - hw - 4, s.y - hh - 4, 2 * hw + 8, Math.max(2 * hh, tight.hh + 14 + hh) + 8]
+  }
+  function drawReadout(s, ct, t) {
+    if (s.lockAge < 0.2) return null
+    const a = ctx.globalAlpha
+    ctx.globalAlpha = a * sstep((s.lockAge - 0.2) / 0.8)
+    // One glyph changes every 0.8 s while the lock holds.
+    const step = Math.floor(s.lockAge / 0.8)
+    if (ct.step !== step) {
+      ct.step = step
+      swapGlyph(Math.random() < 0.6 ? ct.top : ct.bot)
+    }
+    const { hw } = boxSize(s)
+    const gh = 10, em = emblemSprite(30)
+    const width = em.w + 8 + 7 * 0.9 * gh
+    const right = ct.side > 0
+    const x0 = right ? s.x + hw + 18 : s.x - hw - 18 - width
+    const y0 = s.y - 16
+    // A short leader from the box's point to the readout.
+    ctx.strokeStyle = C.box_dim
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(right ? s.x + hw + 3 : s.x - hw - 3, s.y)
+    ctx.lineTo(right ? x0 - 4 : x0 + width + 4, s.y)
+    ctx.stroke()
+    blit(em, x0 + em.w / 2, y0 + 15)
+    ctx.fillStyle = C.glyph
+    glyphRow(ct.top, x0 + em.w + 8, y0 - 1, gh)
+    glyphRow(ct.bot, x0 + em.w + 8, y0 + 15, gh)
+    ctx.globalAlpha = a
+    return [x0 - 6, y0 - 4, width + 12, 34]
+  }
+  // ── end of scene ──
+
+  // ── the schedule: one contact at a time, long gaps ──
+  // Times are display seconds (T), which only run while the display runs.
+  const FIRST = 6, GAP = [32, 52], CROSS = [52, 68]
+  let order = [], last = ''
+  function nextShip() {
+    if (!order.length) {
+      order = C.order.slice()
+      for (let i = order.length - 1; i > 0; i--) { const j = (rnd() * (i + 1)) | 0; [order[i], order[j]] = [order[j], order[i]] }
+      // A new round never starts with the ship that ended the last one.
+      if (order.length > 1 && order[order.length - 1] === last) [order[0], order[order.length - 1]] = [order[order.length - 1], order[0]]
+    }
+    return (last = order.pop())
+  }
+  function plan(start) {
+    const key = nextShip()
+    const dir = rnd() < 0.5 ? 1 : -1
+    return {
+      key, start, dur: CROSS[0] + rnd() * (CROSS[1] - CROSS[0]),
+      // Mostly the lower part of the page, where a chat has the most open space.
+      // The readout trails the ship, on the side it came from, and stays there.
+      dir, side: -dir, yf: 0.42 + 0.36 * rnd(), drift: (rnd() - 0.5) * 0.1,
+      top: newRow(7), bot: newRow(5), col: [newRow(4), newRow(3)],
+    }
+  }
+  let T = 0, contact = plan(FIRST)
+  const nextAfter = ct => plan(ct.start + ct.dur + GAP[0] + rnd() * (GAP[1] - GAP[0]))
+
+  // Where the contact is at time t, and its reticle state.
+  function stateAt(ct, t) {
+    const sh = C.ships[ct.key]
+    const w = shipWidth(sh)
+    const VW = W - OX, VH = H - OY
+    const xs = ct.dir > 0 ? OX - 0.6 * w : W + 0.6 * w
+    const xe = ct.dir > 0 ? W + 0.6 * w : OX - 0.6 * w
+    const u = (t - ct.start) / ct.dur
+    const x = xs + (xe - xs) * u
+    const y = OY + VH * (ct.yf + ct.drift * u)
+    // The lock holds while the ship is well inside the open area.
+    const inU = ((ct.dir > 0 ? OX + 0.14 * VW : W - 0.14 * VW) - xs) / (xe - xs)
+    const outU = ((ct.dir > 0 ? W - 0.16 * VW : OX + 0.16 * VW) - xs) / (xe - xs)
+    const tIn = ct.start + inU * ct.dur, tOut = ct.start + outU * ct.dur
+    const ACQ = 2.6
+    const k = (t - tIn) / ACQ
+    const lockAge = t - (tIn + ACQ)
+    const show = t < tIn ? 0 : t < tOut ? sstep((t - tIn) / 0.6) : 1 - sstep((t - tOut) / 1.6)
+    const fade = sstep((t - ct.start) / 3) * sstep((ct.start + ct.dur - t) / 3)
+    return { sh, w, x, y, u, k, lockAge, show, fade, flip: sh.facing ? sh.facing * ct.dir : 1 }
+  }
+
+  let dirty = null
+  function paint(t) {
+    if (dirty) ctx.clearRect(dirty[0], dirty[1], dirty[2], dirty[3])
+    dirty = null
+    const ct = contact
+    if (t < ct.start || t > ct.start + ct.dur) return
+    const s = stateAt(ct, t)
+    const box = [s.x - s.w, s.y - s.w, 2 * s.w, 2 * s.w]
+    ctx.globalAlpha = s.fade
+    blit(shipSprite(ct.key, s.w, s.flip), s.x, s.y)
+    if (s.show > 0) {
+      ctx.globalAlpha = s.fade * s.show
+      const r = drawReticle(s, t)
+      const ro = drawReadout(s, ct, t)
+      for (const b of [r, ro]) if (b) {
+        const x0 = Math.min(box[0], b[0]), y0 = Math.min(box[1], b[1])
+        box[2] = Math.max(box[0] + box[2], b[0] + b[2]) - x0; box[3] = Math.max(box[1] + box[3], b[1] + b[3]) - y0
+        box[0] = x0; box[1] = y0
+      }
+    }
+    ctx.globalAlpha = 1
+    dirty = [Math.floor(box[0] - 12), Math.floor(box[1] - 12), Math.ceil(box[2] + 24), Math.ceil(box[3] + 24)]
+  }
+
+  // The still frame for reduced motion: one ship, locked, readout up.
+  function still() {
+    ctx.clearRect(0, 0, W, H)
+    dirty = null
+    const key = C.order[0]
+    const r = lcg(C.seed + 1)
+    const ct = { key, start: 0, dur: 60, dir: 1, side: -1, yf: 0.62, drift: 0, top: newRow(7, r), bot: newRow(5, r), col: [newRow(4, r), newRow(3, r)] }
+    const VW = W - OX
+    const sh = C.ships[key], w = shipWidth(sh)
+    const xs = OX - 0.6 * w, xe = W + 0.6 * w
+    const u = (OX + 0.6 * VW - xs) / (xe - xs)
+    const s = stateAt(ct, u * ct.dur)
+    s.k = 1; s.lockAge = 10; s.show = 1; s.fade = 1
+    blit(shipSprite(key, s.w, s.flip), s.x, s.y)
+    drawReticle(s, 0)
+    drawReadout(s, ct, 0)
+  }
+
+  function layout() {
+    DPR = Math.min(2, window.devicePixelRatio || 1)
+    W = Math.max(1, window.innerWidth)
+    H = Math.max(1, window.innerHeight)
+    canvas.width = Math.round(W * DPR)
+    canvas.height = Math.round(H * DPR)
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0)
+    // The open area right of the session list and below the chat header.
+    OX = W >= 1100 ? 470 : W >= 768 ? 250 : 0
+    OY = W >= 768 ? 90 : 56
+    dirty = null
+    sprites.clear()
+  }
+
+  // ── host state and the loop ──
+  // Kiro Crew posts {type: 'theme:state', mode, reducedMotion} on load and on
+  // every change. Nothing draws until the first one arrives. Light mode draws
+  // too: this pack's light palette is the films' black one.
+  let ready = false, hostReduced = false
+  let update = () => {}
+  const osReduced = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null
+  window.addEventListener('message', e => {
+    if (e.source !== window.parent) return
+    const d = e.data
+    if (!d || typeof d !== 'object' || d.type !== 'theme:state') return
+    ready = true
+    hostReduced = d.reducedMotion === true
+    update()
+  })
+  document.addEventListener('visibilitychange', () => update())
+  if (osReduced && osReduced.addEventListener) osReduced.addEventListener('change', () => update())
+
+  let RATE = 1, running = false, timer = 0, lastWall = 0, mode = ''
+  // `cap` limits one step while animating, so a stalled frame does not jump
+  // the ship; a sleep between ships advances by the whole time it slept.
+  function advance(now, cap = 0.25) {
+    T += Math.min(cap, Math.max(0, now - lastWall) / 1000) * RATE
+    lastWall = now
+    while (T > contact.start + contact.dur) contact = nextAfter(contact)
+  }
+  // While a ship is in view, a 20 fps timer wakes and paints; between ships,
+  // the screen is cleared once and the timer sleeps until the next one.
+  function frame() {
+    timer = 0
+    if (!running) return
+    advance(performance.now())
+    paint(T)
+    schedule()
+  }
+  function schedule() {
+    if (!running) return
+    if (T < contact.start) {
+      if (dirty) paint(T)
+      const ms = Math.max(50, ((contact.start - T) * 1000) / RATE)
+      timer = setTimeout(() => { timer = 0; advance(performance.now(), Infinity); schedule() }, Math.min(ms, 60000))
+    } else {
+      timer = setTimeout(frame, FRAME)
+    }
+  }
+  function stop() {
+    running = false
+    if (timer) clearTimeout(timer)
+    timer = 0
+  }
+  update = () => {
+    if (!ready) return
+    const reduced = hostReduced || !!(osReduced && osReduced.matches)
+    const want = reduced ? 'still' : document.hidden ? 'paused' : 'run'
+    if (want === mode) return
+    mode = want
+    stop()
+    if (want === 'still') { still(); canvas.classList.add('on'); return }
+    if (want === 'paused') return
+    running = true
+    lastWall = performance.now()
+    canvas.classList.add('on')
+    ctx.clearRect(0, 0, W, H)
+    dirty = null
+    schedule()
+  }
+
+  window.__klAmbient = {
+    // Replay the schedule from the start up to display time s.
+    seek: s => {
+      rnd = lcg(C.seed); order = []; last = ''; contact = plan(FIRST); T = s
+      while (T > contact.start + contact.dur) contact = nextAfter(contact)
+      if (mode === 'still') return
+      stop(); mode = ''; update()
+    },
+    rate: r => { RATE = r; if (running) { stop(); mode = ''; update() } },
+    info: () => ({ T, mode, contact: { key: contact.key, start: contact.start, dur: contact.dur, dir: contact.dir } }),
+  }
+
+  layout()
+  window.addEventListener('resize', () => { layout(); if (mode === 'still') still() })
+})()
+</script>
+</body>
+</html>

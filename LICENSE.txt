@@ -8,9 +8,10 @@ This file covers the pack's own code and artwork and the font it ships.
    styles/overrides.css, branding/, loader/, audio/, overlays/ script)
 -------------------------------------------------------------------------------
 
-The Klingon emblem and the ship symbol in branding/ and overlays/ are fan
-art of designs owned by CBS Studios / Paramount. The license below covers
-this pack's own work; it grants no rights in those designs or marks.
+The Klingon emblem, the ship symbol and the Federation ship outlines in
+branding/, overlays/ and styles/overrides.css are fan art of designs owned
+by CBS Studios / Paramount, traced from film frames. The license below
+covers this pack's own work; it grants no rights in those designs or marks.
 
 MIT License
 
