@@ -1,0 +1,60 @@
+/*
+ * The K't'inga bridge in The Motion Picture (1979): the tactical display.
+ * Black glass in a dim amber-brown housing with cut corners, a red triangle
+ * lattice, pale glyph labels, an orange ship symbol as the accent.
+ * Light mode uses the same rules: the film has no light screens.
+ * Cut corners use corner-shape: bevel; a browser without it shows rounded
+ * corners instead. Only runtime-allowlisted surfaces are styled.
+ */
+/* The edge-lit plastic displays glow a little. */
+[data-theme="custom-leozh-klingon-ktinga-dark"] body,
+[data-theme="custom-leozh-klingon-ktinga-light"] body {
+  text-shadow: 0 0 6px color-mix(in srgb, currentColor 22%, transparent);
+}
+/* The red triangle lattice of the tactical display behind the chat. */
+[data-theme="custom-leozh-klingon-ktinga-dark"] .chat-container,
+[data-theme="custom-leozh-klingon-ktinga-light"] .chat-container {
+  background-image: linear-gradient(to top right, transparent calc(50% - 0.8px), rgba(255, 22, 5, 0.11) calc(50% - 0.8px) calc(50% + 0.8px), transparent calc(50% + 0.8px)),
+    linear-gradient(to bottom right, transparent calc(50% - 0.8px), rgba(255, 22, 5, 0.11) calc(50% - 0.8px) calc(50% + 0.8px), transparent calc(50% + 0.8px)),
+    linear-gradient(to bottom, rgba(255, 22, 5, 0.11) 0 0.8px, transparent 0.8px calc(50% - 0.8px), rgba(255, 22, 5, 0.11) calc(50% - 0.8px) calc(50% + 0.8px), transparent calc(50% + 0.8px) calc(100% - 0.8px), rgba(255, 22, 5, 0.11) calc(100% - 0.8px));
+  background-size: 34px 58.89px;
+}
+/* The viewscreen housing: thick amber-brown, cut corners, a red inner line. */
+[data-theme="custom-leozh-klingon-ktinga-dark"] .sidebar,
+[data-theme="custom-leozh-klingon-ktinga-light"] .sidebar {
+  border: 5px solid #5c2c08;
+  border-radius: 26px;
+  corner-shape: bevel;
+  background: #000000;
+  box-shadow: inset 0 0 0 2px rgba(255, 22, 5, 0.55);
+}
+[data-theme="custom-leozh-klingon-ktinga-dark"] .code-block,
+[data-theme="custom-leozh-klingon-ktinga-light"] .code-block {
+  border: 2px solid #c71104;
+  border-radius: 14px;
+  corner-shape: bevel;
+  background: #000000;
+  box-shadow: 0 0 10px rgba(255, 22, 5, 0.3);
+}
+/* Messages are glyph labels on black, set into the grid. */
+[data-theme="custom-leozh-klingon-ktinga-dark"] .message-bubble,
+[data-theme="custom-leozh-klingon-ktinga-light"] .message-bubble {
+  border: 1px solid rgba(255, 22, 5, 0.6);
+  border-radius: 10px;
+  corner-shape: bevel;
+  background: #000000;
+}
+[data-theme="custom-leozh-klingon-ktinga-dark"] .input-area,
+[data-theme="custom-leozh-klingon-ktinga-light"] .input-area {
+  caret-color: #ff4405;
+}
+/* The primary button is the ship's target box: a hexagon pointed at both ends. */
+[data-theme="custom-leozh-klingon-ktinga-dark"] button.primary,
+[data-theme="custom-leozh-klingon-ktinga-light"] button.primary {
+  border-radius: 14px / 50%;
+  corner-shape: bevel;
+  padding-left: 18px;
+  padding-right: 18px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 10px rgba(255, 68, 5, 0.35);
+}
