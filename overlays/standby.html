@@ -235,9 +235,24 @@
     octagon(x0 + 0.5 * u, y0 + 0.5 * u, x1 - 0.5 * u, y1 - 0.5 * u, b - 0.5 * u); ctx.stroke()
     ctx.fillStyle = '#000'
     octagon(scr.x, scr.y, scr.x + scr.w, scr.y + scr.h, b - t); ctx.fill()
-    // The lattice, clipped to the hexagon, with its glow.
+    // The lattice, clipped to the hexagon, with its glow. It has two levels, as
+    // in frames 50 and 94: thin minor lines with a dot at every node, and the
+    // brighter major lattice on every fourth minor line.
     ctx.save()
     hexPath(cx, cy, hw, hh, d); ctx.clip()
+    const m = lat.s / 4, row = m * SQ3 / 2, span = (lat.y1 - lat.y0) / SQ3
+    ctx.globalAlpha = 0.45
+    lattice(lat.x0, lat.y0, lat.x1, lat.y1, m, C.lattice_line, Math.max(0.6, 0.045 * u))
+    ctx.fillStyle = C.lattice_line
+    ctx.globalAlpha = 0.9
+    const dot = Math.max(0.9, 0.07 * u)
+    ctx.beginPath()
+    for (let k = 0, y = lat.y0; y <= lat.y1 + 1; k++, y += row) {
+      const off = (((k * m / 2 - span) % m) + m) % m
+      for (let x = lat.x0 + off - m; x <= lat.x1 + m; x += m) { ctx.moveTo(x + dot, y); ctx.arc(x, y, dot, 0, TAU) }
+    }
+    ctx.fill()
+    ctx.globalAlpha = 1
     glow(C.lattice, 0.4 * u)
     lattice(lat.x0, lat.y0, lat.x1, lat.y1, lat.s, C.lattice_line, Math.max(1, 0.09 * u))
     ctx.restore()
